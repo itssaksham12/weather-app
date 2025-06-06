@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 40px; }
+        input, button { padding: 10px; margin: 10px; }
+        img { width: 80px; }
+    </style>
+</head>
+<body>
+    <h1>Weather App by Saksham</h1>
+    <p><a href="https://www.linkedin.com/school/pmaccelerator/" target="_blank">About PM Accelerator</a></p>
+    <form method="POST">
+        <input type="text" name="city" placeholder="Enter city name..." required>
+        <button type="submit">Get Weather</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if weather %}
+        <h2>Current Weather in {{ weather.city }}</h2>
+        <p>{{ weather.temperature }}°C - {{ weather.description }}</p>
+        <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="weather icon">
+    {% endif %}
+
+    {% if forecast %}
+        <h3>5-Day Forecast</h3>
+        <ul style="list-style: none;">
+            {% for day in forecast %}
+            <li>
+                <strong>{{ day.dt_txt.split(" ")[0] }}</strong>:
+                {{ day.main.temp }}°C,
+                {{ day.weather[0].description }}
+                <img src="http://openweathermap.org/img/wn/{{ day.weather[0].icon }}@2x.png">
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
