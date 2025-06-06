@@ -19,7 +19,7 @@ A simple Flask-based weather app that allows users to search for the current wea
 
 - Python 3
 - Flask
-- HTML + CSS (Jinja2 templating)
+- HTML 
 - OpenWeatherMap API
 - dotenv for environment variables
 
