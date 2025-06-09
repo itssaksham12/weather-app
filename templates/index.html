@@ -2,43 +2,201 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <style>
-        body { font-family: Arial; text-align: center; padding: 40px; }
-        input, button { padding: 10px; margin: 10px; }
-        img { width: 80px; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .search-form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        input[type="text"] {
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            width: 300px;
+            margin-right: 10px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #74b9ff;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            background: #74b9ff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0984e3;
+        }
+        .error {
+            background: #ff7675;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .weather-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .weather-icon {
+            width: 80px;
+            height: 80px;
+        }
+        .temperature {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        .city-name {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+        .weather-details {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .detail-item {
+            text-align: center;
+        }
+        .detail-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .detail-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .forecast {
+            margin-top: 30px;
+        }
+        .forecast h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .forecast-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .forecast-day {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        .forecast-icon {
+            width: 50px;
+            height: 50px;
+        }
+        .forecast-temp {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .forecast-date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .forecast-desc {
+            font-size: 12px;
+            color: #888;
+        }
     </style>
 </head>
 <body>
-    <h1>Weather App by Saksham</h1>
-    <p><a href="https://www.linkedin.com/school/pmaccelerator/" target="_blank">About PM Accelerator</a></p>
-    <form method="POST">
-        <input type="text" name="city" placeholder="Enter city name..." required>
-        <button type="submit">Get Weather</button>
-    </form>
+    <div class="container">
+        <h1>🌤️ Weather App</h1>
+        
+        <form method="POST" class="search-form">
+            <input type="text" name="city" placeholder="Enter city name..." required>
+            <button type="submit">Get Weather</button>
+        </form>
 
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
 
-    {% if weather %}
-        <h2>Current Weather in {{ weather.city }}</h2>
-        <p>{{ weather.temperature }}°C - {{ weather.description }}</p>
-        <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="weather icon">
-    {% endif %}
+        {% if weather %}
+            <div class="weather-card">
+                <div class="city-name">{{ weather.city }}, {{ weather.country }}</div>
+                <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" 
+                     alt="{{ weather.description }}" class="weather-icon">
+                <div class="temperature">{{ weather.temperature }}°C</div>
+                <div class="description">{{ weather.description }}</div>
+                
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Feels Like</div>
+                        <div class="detail-value">{{ weather.feels_like }}°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Humidity</div>
+                        <div class="detail-value">{{ weather.humidity }}%</div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
-    {% if forecast %}
-        <h3>5-Day Forecast</h3>
-        <ul style="list-style: none;">
-            {% for day in forecast %}
-            <li>
-                <strong>{{ day.dt_txt.split(" ")[0] }}</strong>:
-                {{ day.main.temp }}°C,
-                {{ day.weather[0].description }}
-                <img src="http://openweathermap.org/img/wn/{{ day.weather[0].icon }}@2x.png">
-            </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% if forecast %}
+            <div class="forecast">
+                <h3>5-Day Forecast</h3>
+                <div class="forecast-container">
+                    {% for day in forecast %}
+                        <div class="forecast-day">
+                            <div class="forecast-date">{{ day.date }}</div>
+                            <img src="http://openweathermap.org/img/wn/{{ day.icon }}.png" 
+                                 alt="{{ day.description }}" class="forecast-icon">
+                            <div class="forecast-temp">{{ day.temp }}°C</div>
+                            <div class="forecast-desc">{{ day.description }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
